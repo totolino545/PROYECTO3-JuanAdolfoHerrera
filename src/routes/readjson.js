@@ -7,18 +7,17 @@ function leer() {
     return new Promise((resolve, reject) => {
         fs.readFile(ruta, 'utf8', (error, result) => {
             if (error) reject(new Error('Error. No se puede leer'));
-
             resolve(JSON.parse(result));
         });
     });
 }
 function write(contenido, tabla, complemento, complementaria) {
-    fs.writeFile(`../json/${tabla}.json`, JSON.stringify(contenido, null, '\t'), 'utf8', (error) => {
+    fs.writeFile(`src/json/${tabla}.json`, JSON.stringify(contenido, null, '\t'), 'utf8', (error) => {
         if (error) {
             console.log('Error al agregar contenido en el archivo');
         }
     });
-    fs.writeFile(`../json/${complementaria}.json`, JSON.stringify(complemento, null, '\t'), 'utf8', (error) => {
+    fs.writeFile(`src/json/${complementaria}.json`, JSON.stringify(complemento, null, '\t'), 'utf8', (error) => {
         if (error) {
             console.log('Error al agregar contenido en el archivo');
         }
@@ -28,7 +27,7 @@ function write(contenido, tabla, complemento, complementaria) {
 // eslint-disable-next-line max-lines-per-function
 async function readAll() {
     const catalogo = await leer();
-    const campos = ['genero', 'reparto', 'categorias'];
+    const campos = ['genero', 'reparto', 'categoria'];
     const complementos = ['tags', 'actricesyactores', 'catalogo'];
     let campo = [];
     // eslint-disable-next-line max-lines-per-function
@@ -71,7 +70,7 @@ async function readAll() {
                     write(complemento, `catalogo_${tabla}`, contenido, complementaria);
                     delete item.reparto;
                     break; }
-                case 'categorias': {
+                case 'categoria': {
                     campo = item[valor].split(', ');
                     campo.forEach((value) => {
                         if (!auxiliar.includes(value)) {
@@ -91,6 +90,7 @@ async function readAll() {
 
 function init() {
     readAll();
+    console.log('Operacion Completada');
 }
 
 init();

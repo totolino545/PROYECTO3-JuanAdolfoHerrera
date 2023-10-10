@@ -17,9 +17,9 @@ function leer(ARCHIVO) {
         });
     });
 }
-// Endpoint a /writejson lista toda la tablas ruta http://localhost:8080/writejson?listado='?'
+// Endpoint a /writejson lista toda la tablas ruta http://127.0.0.1:8080/writejson?load='?'
 router.post('/', async (req, res) => {
-    const ARCHIVO = req.query.cargar;
+    const ARCHIVO = req.query.load;
     const campo = ['generos', 'catalogo_reparto', 'categorias', 'catalogo_tags', 'actricesyactores', 'catalogo'];
     if (!campo.includes(ARCHIVO)) {
         res.status(400).send({ message: `Error: El paramaetro debe ser ${campo} ${ARCHIVO}` });

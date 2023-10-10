@@ -1,30 +1,37 @@
-# Proyecto Integral N°2
+# Proyecto Integrador N°3
 
-El presente documento, es el **Proyecto Integral N°2** de ***Argentina Program 4.0***. Esta es una pequeña solución informática que sirve registrar los muebles de una mueblería.
-La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual está desarrollada bajo las restricciones y recomendaciones de REST, además, implementa buenas prácticas de programación.
+El presente documento, es el **Proyecto Integrador N°3** de ***Argentina Program 4.0***. Ésta es una pequeña solución informática que sirve para la consulta de una base de datos MYSQL de películas y series implementada mediante un servidor Express.js y métodos http GET y POST.
 
 #### Especificaciones
-- Servidor: http://127.0.0.1:3005
+- Servidor: http://127.0.0.1:8080
 - Autor: Juan Adolfo Herrera
 
 #### Requerimientos
 - Node.js v18.16.0
-- MongoDB v5.6
+- Sequelize v6.33.0
 - GIT v2.40.1
-- IDE - Visual Studio Code v1.78.2
+- IDE - Visual Studio Code v1.83.0
 
 #### Estructura de directorios
 ``` tree
     ├── node_modules
     ├── src
-    │   └── server.js
-    ├── tests
-    │   └── proyecto2.test.js
+    │   ├──server.js
+    │   ├── connection
+    │   │   └── connection_db.js
+    │   ├── json
+    │   │   └── varios archivos json generados mediante la funcion readjson.js.
+    │   ├── models
+    │   │   └── contiene los modelos que representan cada tabla de la base de datos.
+    │   ├── routes  "Rutas a 
+    │   │   └── actor.js 
+    │   │   └── catalogo.js 
+    │   │   └── readjson.js 
+    │   │   └── writejson.js      
     ├── .env
     ├── .env.dist
     ├── .eslintrc.json
     ├── .gitignore
-    ├── connection_db.js
     ├── package.json
     ├── package-lock.json 
     └── README.md
@@ -35,109 +42,48 @@ La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual
   - #### VARIABLES DE ENTORNO
     Se debe hacer una copia del archivo **.env.dist** y renombrarlo como **.env**. Con respecto a su contenido, es necesario asignar los valores a correspondientes a las variables:
     ``` js
-        SERVER_PORT=3005
-        SERVER_HOST=127.0.0.1
+        PORT=8080
+        HOST=127.0.0.1
 
-        DATABASE_URL=tu-cadena-de-conexion
-        DATABASE_NAME=muebleria
+        DB_NAME=TrailerFlix
+        DB_USER=tu usuario de mysql
+        DB_PASS=tu password de mysql
     ```
 
  - #### TESTS
-    Hasta el momento, hay una sola suite de test (proyecto2.test.js). La misma, se ejecuta por medio del comando ***npm run test***. Para que dicho test pase correctamente, se debe tener una base de datos en MongoDB llamada *muebleria* que tenga una collection denominada *muebles* y esta, contenga los documentos de los muebles. Además, se debe tener el servidor HTTP ejecutandose en otra terminal de Visual Studio Code. Esto se hace con ***npm run start***.
+    Hasta el momento, no se ha implementado ningún test, sin embargo se ha prestado gran atención a las validaciones.
 
  - #### ERRORES & FORMATOS
     La comprobación de errores y formatos se ejecuta por medio del comando ***npm run eslint***. se hace por medio de Eslint. Para visualizar los errores en tiempo de escritura, se debe tener instalada la extensión de **Eslint** en Visual Studio Code.
     
 ---
-### MÓDULO DE MUEBLES
+### MÓDULO DE READJSON
 
-Este módulo permite la gestión de muebles. El mismo, ofrece funciones para agregar, modificar, borrar o leer el registro de un mueble. Además, permite visualizar reportes filtrados por diferentes criterios de búsqueda.
+Este módulo permite leer el archivo trailerflix.json através de un script y generar archivos json de las claves principales que formarán las tablas de la base de datos. Se ejecuta por medio del comando ***npm run read***
+
+### MÓDULO DE WRITEJSON
+
+Este módulo permite cargar cada tabla de la base de datos TrailerFlix através de la lectura de archivos json generados por el módulo readjson, ver REF. La carga se realiza mediante un método POST en la ruta http://127.0.0.1:8080/writejson?load='?'. 
+
+REF: (catálogo, categoría, genero, actricesyactores, catalogo_tags, catalogo_reparto).
 
 #### Métodos HTTP
 | Tipo | URI | Descripción |
 |------|-----|-------------|
-| GET | http://127.0.0.1:3005/api/v1/muebles | Obtiene los registros (permite filtros) |
-| GET | http://127.0.0.1:3005/api/v1/muebles/1 | Obtiene un registro en específico |
-| POST | http://127.0.0.1:3005/api/v1/muebles | Crea un nuevo registro |
-| PUT | http://127.0.0.1:3005/api/v1/muebles/1 | Modifica un registro en específico |
-| DELETE | http://127.0.0.1:3005/api/v1/muebles/1 | Elimina un registro en específico |
+| POST | http://127.0.0.1:8080/writejson?load='?' | Permite cargar las tablas (ver REF) Requiere query|
+
+### MÓDULO DE CATALOGO
+
+Este módulo permite consultas a la base de datos TrailerFlix. El mismo, ofrece diferentes opciones de filtro, ver REF. Además, permite visualizar reportes por Id , filtrar registros por nombre, categoría y género, en estos últimos permiten búsquedas por parámetros pacciales.
+REF. (catálogo, categoría, genero, actricesyactores).
+
+#### Métodos HTTP
+| Tipo | URI | Descripción |
+|------|-----|-------------|
+| GET  | http://127.0.0.1:8080/catalogo | Obtiene los registros de cada tabla(ver REF) Requiere query|
+| GET  | http://127.0.0.1:8080/catalogo/1 | Obtiene un registro en específico |
+| GET  | http://127.0.0.1:8080/catalogo/nombre/:nombre | Obtiene un registro determinado por el nombre o porción del mismo |
+| GET  | http://127.0.0.1:8080/catalogo/genero/:genero | Obtiene todos registro de un género específico |
+| GET  | http://127.0.0.1:8080/catalogo/categoria/:categoria | Obtiene todos registro de una categoría específica |
 
 
-#### Método GET:
-- Request:
-  - Parámetros opcionales de tipo QUERY:
-    - categoria=Oficina  *(tipo: string. Trae los muebles de una misma categoría)* 
-    - precio_gte=500.00  *(tipo: decimal. Trae los muebles que tienen un precio mayor o igual a $500)* 
-    - precio_lte=400.00  *(tipo: decimal. Trae los muebles que tienen un precio menor o igual a $400)* 
-- Response:
-    ``` json
-        [
-            {
-                "_id": "64b082dabbbdbf35047fd6b6",
-                "codigo": 7,
-                "nombre": "Cama individual",
-                "precio": 399.99,
-                "categoria": "Dormitorio"
-            }
-        ]
-    ```
-  - Código HTTP: **200** *payload: muebles*
-  - Código HTTP: **500** *message: Se ha generado un error en el servidor*
-
-
-#### Método GET - Específico:
-- Request:
-  - Parámetro obligatorio de tipo URL:
-    - 9 *(tipo: integer. Indica el código del mueble que se requiere obtener)*
-- Response:
-    ``` json
-        {
-              "_id": "64b082dabbbdbf35047fd6b7",
-              "codigo": 9,
-              "nombre": "Mesa de Comedor de Madera",
-              "precio": 299.99,
-              "categoria": "Comedor"
-        }
-    ```
-  - Código HTTP: **200** *payload: mueble*
-  - Código HTTP: **400** *message: El código no corresponde a un mueble registrado*
-  - Código HTTP: **500** *message: Se ha generado un error en el servidor*
-
-
-#### Método POST:
-- Request:
-  - Parámetros requeridos del BODY:
-    - nombre=Biblioteca de madera deluxe *(tipo: string. Establece el valor del nombre)* 
-    - precio=1250.55                     *(tipo: integer. Establece el valor del precio)* 
-    - categoria=Oficina                  *(tipo: decimal. Establece el valor del categoría)* 
-- Response:
-  - Código HTTP: **201** *message: 'Registro creado', payload: mueble*
-  - Código HTTP: **400** *message: Faltan datos relevantes*
-  - Código HTTP: **500** *message: Se ha generado un error en el servidor*
-- Nota: *Los valores indicados en el ejemplo, son datos esperados en los tests.*
-
-
-#### Método PUT:
-- Request:
-  - Parámetro obligatorio de tipo URL:
-    - 16 *(tipo: integer. Indica el código del mueble que se requiere modificar)*
-  - Parámetros requeridos del BODY:
-    - nombre=Modular metálico deluxe *(tipo: string. Establece el valor del nombre)* 
-    - precio=999.75                  *(tipo: integer. Establece el valor del precio)* 
-    - categoria=Oficina              *(tipo: decimal. Establece el valor del categoría)* 
-- Response:
-  - Código HTTP: **200** *message: 'Registro actualizado', payload: mueble*
-  - Código HTTP: **400** *message: El código no corresponde a un mueble registrado*
-  - Código HTTP: **400** *message: Faltan datos relevantes*
-  - Código HTTP: **500** *message: Se ha generado un error en el servidor*
-- Nota: *Los valores indicados en el ejemplo, son datos esperados en los tests.*
-
-
-#### Método DELETE:
-- Request:
-  - Parámetro obligatorio de tipo URL:
-    - 16 *(tipo: integer. Indica el código del mueble que se requiere eliminar)*
-- Response:
-  - Código HTTP: **200** *message: 'Registro eliminado'*
-  - Código HTTP: **500** *message: Se ha generado un error en el servidor*
-- Nota: *Los valores indicados en el ejemplo, son datos esperados en los tests.*

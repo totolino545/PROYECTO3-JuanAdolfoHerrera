@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
+const path = require('path');
 
 const sequelize = require('./connection/connection_db');
 const catalogo = require('./routes/catalogo');
@@ -11,9 +12,10 @@ const server = express();
 
 // Middlewares
 server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
-
-const messageErrorServer = JSON.stringify({ message: 'Se ha generado un error en el servidor' });
+// Servir un recurso de forma estática (imagenes, PDFs, etc.)
+server.use('/json', express.static(path.join(__dirname, 'json')));
 
 // Rutas a Catalogos
 server.use('/catalogo', catalogo);

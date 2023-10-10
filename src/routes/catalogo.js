@@ -121,7 +121,7 @@ router.get('/genero/:genero', async (req, res, next) => {
     }
 });
 
-// Endpoint a /catalogo/genero busqueda por Categoria ruta http://localhost:8080/catalogo/genero/nombre
+// Endpoint a /catalogo/categoria busqueda por Categoria ruta http://localhost:8080/catalogo/genero/nombre
 router.get('/categoria/:categoria', async (req, res, next) => {
     try {
         const nombre = req.params.categoria;
