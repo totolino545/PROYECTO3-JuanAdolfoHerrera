@@ -50,18 +50,15 @@ El presente documento, es el **Proyecto Integrador N°3** de ***Argentina Progra
         DB_PASS=tu password de mysql
     ```
 
- - #### TESTS
-    Hasta el momento, no se ha implementado ningún test, sin embargo se ha prestado gran atención a las validaciones.
-
  - #### ERRORES & FORMATOS
     La comprobación de errores y formatos se ejecuta por medio del comando ***npm run eslint***. se hace por medio de Eslint. Para visualizar los errores en tiempo de escritura, se debe tener instalada la extensión de **Eslint** en Visual Studio Code.
     
 ---
-### MÓDULO DE READJSON
+### MÓDULO READJSON
 
 Este módulo permite leer el archivo trailerflix.json através de un script y generar archivos json de las claves principales que formarán las tablas de la base de datos. Se ejecuta por medio del comando ***npm run read***
 
-### MÓDULO DE WRITEJSON
+### MÓDULO WRITEJSON
 
 Este módulo permite cargar cada tabla de la base de datos TrailerFlix através de la lectura de archivos json generados por el módulo readjson, ver REF. La carga se realiza mediante un método POST en la ruta http://127.0.0.1:8080/writejson?load='?'. 
 
@@ -72,9 +69,9 @@ REF: (catálogo, categoría, genero, actricesyactores, catalogo_tags, catalogo_r
 |------|-----|-------------|
 | POST | http://127.0.0.1:8080/writejson?load='?' | Permite cargar las tablas (ver REF) Requiere query|
 
-### MÓDULO DE CATALOGO
+### MÓDULO CATALOGO
 
-Este módulo permite consultas a la base de datos TrailerFlix. El mismo, ofrece diferentes opciones de filtro, ver REF. Además, permite visualizar reportes por Id , filtrar registros por nombre, categoría y género, en estos últimos permiten búsquedas por parámetros pacciales.
+Este módulo permite consultas a la base de datos TrailerFlix. El mismo, ofrece diferentes opciones de filtro, ver REF. Además, permite visualizar reportes por Id , filtrar registros por nombre, categoría y género, en estos últimos permite búsquedas por parámetros parciales.
 REF. (catálogo, categoría, genero, actricesyactores).
 
 #### Métodos HTTP
@@ -85,5 +82,15 @@ REF. (catálogo, categoría, genero, actricesyactores).
 | GET  | http://127.0.0.1:8080/catalogo/nombre/:nombre | Obtiene un registro determinado por el nombre o porción del mismo |
 | GET  | http://127.0.0.1:8080/catalogo/genero/:genero | Obtiene todos registro de un género específico |
 | GET  | http://127.0.0.1:8080/catalogo/categoria/:categoria | Obtiene todos registro de una categoría específica |
+
+### MÓDULO ACTOR
+
+Este módulo permite búsquedas en la base de datos TrailerFlix por nombre (inicial, parcial, total) de un actor espécifico.
+
+#### Métodos HTTP
+| Tipo | URI | Descripción |
+|------|-----|-------------|
+| GET  | http://127.0.0.1:8080/actor/:nombre | Obtiene todos registro de un actor específico |
+
 
 

@@ -7,7 +7,7 @@ const Actricesyactores = sequelize.define('Actricesyactores', {
         primaryKey: true,
         autoIncrement: true
     },
-    Actor: {
+    actor: {
         type: DataTypes.STRING,
         allowNull: false
     }

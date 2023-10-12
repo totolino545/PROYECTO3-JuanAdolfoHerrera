@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 
 const { Vista_Catalogo } = require('../models/index');
 
-// Endpoint a /catalogo filtrar por nombre o parte del nombre ruta http://localhost:8080/actortitulo?nombre=''?
+// Endpoint a /actor/ filtrar por nombre o parte del nombre ruta http://localhost:8080/actor/?actor=''?
 router.get('/:actor', async (req, res, next) => {
     const nombre = req.params.actor;
     try {
@@ -13,7 +13,6 @@ router.get('/:actor', async (req, res, next) => {
             next({ message: `Error: Se requiere un parámetro de búsqueda.` });
             return;
         }
-
         // Realiza la búsqueda utilizando el operador LIKE
         const resultados = await Vista_Catalogo.findAll({
             where: {

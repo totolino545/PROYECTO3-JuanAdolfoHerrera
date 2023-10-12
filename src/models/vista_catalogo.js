@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../connection/connection_db');
 
 const Vista_Catalogo = sequelize.define('Vista_Catalogo', {
-    IdCatalogo: {
+    Id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -13,25 +13,24 @@ const Vista_Catalogo = sequelize.define('Vista_Catalogo', {
     titulo: {
         type: DataTypes.STRING
     },
-      
     categoria: {
         type: DataTypes.STRING
     },
-    Genero: {
+    genero: {
         type: DataTypes.STRING
     },
     resumen: {
         type: DataTypes.TEXT
-    }, 
+    },
     temporadas: {
         type: DataTypes.STRING
     },
-    Reparto: {
+    reparto: {
         type: DataTypes.STRING
     },
     trailer: {
         type: DataTypes.STRING
-    }       
+    }
 }, {
     tableName: 'Vista_Catalogo',
     timestamps: false

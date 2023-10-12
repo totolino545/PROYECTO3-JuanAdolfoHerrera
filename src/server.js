@@ -32,9 +32,9 @@ server.use('*', (req, res) => {
 });
 
 // Manejo de errores
-server.use((err, req, res, next) => {
+server.use((err, req, res) => {
     console.log(err);
-    res.send(err);
+    res.send('error');
 });
 
 // Método oyente de solicitudes

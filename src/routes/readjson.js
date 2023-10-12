@@ -62,7 +62,7 @@ async function readAll() {
                     campo.forEach((value) => {
                         if (!auxiliar.includes(valor)) {
                             auxiliar.push(value);
-                            contenido.push({ Id: idc++, Actor: value });
+                            contenido.push({ Id: idc++, actor: value });
                         }
                         const idcom = auxiliar.indexOf(value);
                         complemento.push({ Id: id++, IdTitulo: item.id, IdActor: idcom + 1 });
@@ -77,6 +77,7 @@ async function readAll() {
                             auxiliar.push(value);
                             contenido.push({ Id: ida++, categoria: value });
                         }
+                        item.poster = `http://127.0.0.1:8080${item.poster}`;
                         complemento.push(item);
                     });
                     write(contenido, tabla, complemento, complementaria);

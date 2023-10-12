@@ -12,6 +12,11 @@ function leer(ARCHIVO) {
             if (error) {
                 reject(new Error(`Error: No se puede leer el archivo ${ARCHIVO}`));
             } else {
+                fs.unlink(ruta, (err) => {
+                    if (err) {
+                        console.error('Error al borrar el archivo JSON:', error.message);
+                    }
+                });
                 resolve(JSON.parse(result));
             }
         });
@@ -20,14 +25,13 @@ function leer(ARCHIVO) {
 // Endpoint a /writejson lista toda la tablas ruta http://127.0.0.1:8080/writejson?load='?'
 router.post('/', async (req, res) => {
     const ARCHIVO = req.query.load;
-    const campo = ['generos', 'catalogo_reparto', 'categorias', 'catalogo_tags', 'actricesyactores', 'catalogo'];
+    const campo = ['generos', 'catalogo_reparto', 'categoria', 'catalogo_tags', 'actricesyactores', 'catalogo'];
     if (!campo.includes(ARCHIVO)) {
-        res.status(400).send({ message: `Error: El paramaetro debe ser ${campo} ${ARCHIVO}` });
+        res.status(400).send({ message: `Error: El paramaetro debe ser ${campo} Ingresaste ${ARCHIVO}` });
         return;
     }
     try {
         const titulos = await leer(ARCHIVO);
-        console.log(titulos);
         let newCategoria;
 
         switch (ARCHIVO) {
@@ -37,7 +41,7 @@ router.post('/', async (req, res) => {
         case 'catalogo_reparto':
             newCategoria = await Catalogo_Reparto.bulkCreate(titulos);
             break;
-        case 'categorias':
+        case 'categoria':
             newCategoria = await Categorias.bulkCreate(titulos);
             break;
         case 'catalogo_tags':

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../connection/connection_db');
 
 const Catalogo_Tags = sequelize.define('Catalogo_Tags', {
-    ID: {
+    Id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true

@@ -1,65 +1,76 @@
-USE TRAILERFLIXDB.SQL;
-
+DROP DATABASE trailerflix;
+CREATE DATABASE trailerflix
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+USE trailerflix;
 CREATE TABLE `Actricesyactores` (
-	`idActor` INT NOT NULL AUTO_INCREMENT,
+	`Id` INT NOT NULL AUTO_INCREMENT,
 	`Actor` varchar(40) NOT NULL,
-	PRIMARY KEY (`idActor`)
+	PRIMARY KEY (`Id`)
 );
 
-CREATE TABLE `Reparto` (
-	`idrep` INT NOT NULL AUTO_INCREMENT,
-	`idTitulo` INT NOT NULL,
-	`idActor` INT NOT NULL,
-	PRIMARY KEY (`idrep`)
+CREATE TABLE `Catalogo_Reparto` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`IdTitulo` INT NOT NULL,
+	`IdActor` INT NOT NULL,
+	PRIMARY KEY (`Id`)
 );
 
-CREATE TABLE `Categoria` (
-	`idCat` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE `Categorias` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
 	`Categoria` char(10) NOT NULL,
-	PRIMARY KEY (`idCat`)
+	PRIMARY KEY (`Id`)
 );
 
 CREATE TABLE `Catalogo` (
-	`idTitulo` INT NOT NULL AUTO_INCREMENT,
-	`Titulo` varchar(60) NOT NULL,
-	`idCat` INT NOT NULL,
-	`idGenero` varchar(20),
-	`resumen` varchar(256) NOT NULL,
-	`temporadas` INT DEFAULT '0',
-	`reparto` varchar(30) NOT NULL,
-	`trailer` varchar(50) NOT NULL,
-	`poster` varchar(25) NOT NULL,
-	PRIMARY KEY (`idTitulo`)
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Titulo` varchar(80) NOT NULL,
+	`Categoria` varchar(20) NOT NULL,
+	`Resumen` text NOT NULL,
+	`Temporadas` varchar(10) NOT NULL DEFAULT '1',
+	`Trailer` varchar(50),
+	`Poster` varchar(50) NOT NULL,
+	PRIMARY KEY (`Id`)
 );
 
 CREATE TABLE `Generos` (
-	`idGen` INT NOT NULL AUTO_INCREMENT,
+	`Id` INT NOT NULL AUTO_INCREMENT,
 	`Genero` char(20) NOT NULL,
-	PRIMARY KEY (`idGen`)
+	PRIMARY KEY (`Id`)
 );
 
-CREATE TABLE `Tags` (
-	`idTags` INT NOT NULL AUTO_INCREMENT,
-	`idTitulo` INT NOT NULL,
-	`Tag` INT NOT NULL,
-	PRIMARY KEY (`idTags`)
+CREATE TABLE `Catalogo_Tags` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`IdTitulo` INT NOT NULL,
+	`IdGen` INT NOT NULL,
+	PRIMARY KEY (`Id`)
 );
+USE trailerflix;
+CREATE VIEW Vista_ActricesyActores AS
+SELECT IdTitulo, A.Actor  
+FROM Actricesyactores A
+JOIN Catalogo_Reparto R ON A.Id = R.IdActor;
 
-ALTER TABLE `Reparto` ADD CONSTRAINT `Reparto_fk0` FOREIGN KEY (`idTitulo`) REFERENCES `Catalogo`(`idTitulo`);
+CREATE VIEW Vista_Reparto AS
+SELECT IdTitulo, GROUP_CONCAT( Actor ORDER BY IdTitulo DESC SEPARATOR ', ') AS Reparto
+FROM Vista_ActricesyActores
+GROUP BY IdTitulo;
 
-ALTER TABLE `Reparto` ADD CONSTRAINT `Reparto_fk1` FOREIGN KEY (`idActor`) REFERENCES `Actricesyactores`(`idActor`);
+CREATE VIEW Vista_Generos AS 
+SELECT G.Genero, T.IdTitulo 
+FROM Generos G 
+JOIN Catalogo_Tags T ON T.IdGen = G.Id;
 
-ALTER TABLE `Catalogo` ADD CONSTRAINT `Catalogo_fk0` FOREIGN KEY (`idCat`) REFERENCES `Categoria`(`idCat`);
+CREATE VIEW Vista_Tags AS 
+SELECT IdTitulo, GROUP_CONCAT( genero ORDER BY IdTitulo DESC SEPARATOR ', ') AS Titulo
+FROM Vista_Generos 
+GROUP BY IdTitulo;
 
-ALTER TABLE `Catalogo` ADD CONSTRAINT `Catalogo_fk1` FOREIGN KEY (`idGenero`) REFERENCES `Generos`(`idGen`);
-
-ALTER TABLE `Catalogo` ADD CONSTRAINT `Catalogo_fk2` FOREIGN KEY (`reparto`) REFERENCES `Actricesyactores`(`idActor`);
-
-ALTER TABLE `Tags` ADD CONSTRAINT `Tags_fk0` FOREIGN KEY (`idTitulo`) REFERENCES `Catalogo`(`idTitulo`);
-
-ALTER TABLE `Tags` ADD CONSTRAINT `Tags_fk1` FOREIGN KEY (`Tag`) REFERENCES `Generos`(`idGen`);
-
-
+CREATE VIEW Vista_Catalogo AS
+SELECT C.Id AS Id, C.titulo, C.resumen, C.temporadas, C.categoria, C.trailer, C.poster, T.Titulo as Genero, R.Reparto as Reparto
+FROM Catalogo C 
+JOIN Vista_Tags T ON T.IdTitulo = C.Id
+JOIN Vista_Reparto R ON R.IdTitulo = C.Id;
 
 
 

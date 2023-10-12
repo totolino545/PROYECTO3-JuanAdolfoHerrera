@@ -3,10 +3,11 @@ const router = express.Router();
 
 const { Op } = require('sequelize');
 const { Generos, Actricesyactores, Categorias, Vista_Catalogo } = require('../models/index');
-
+const messageErrorServer = JSON.stringify({ message: 'Se produjo un error en el server' });
 // Endpoint a /catalogo lista las tablas Generos, Actricesyactores, Catalogo y
 // Categorias ruta http://localhost:8080/catalogo?busqueda='?'
 router.get('/', async (req, res, next) => {
+    // Pamámetro recibido por query
     const item = req.query.busqueda;
     const campo = ['generos', 'categorias', 'actricesyactores', 'catalogo'];
     if (!campo.includes(item)) {
@@ -36,29 +37,29 @@ router.get('/', async (req, res, next) => {
 
         res.status(200).send(listado);
     } catch (err) {
-        res.status(500);
+        res.status(messageErrorServer);
         next(err);
     }
 });
 
 // Endpoint a /catalogo lista por ID, ruta http://localhost:8080/catalogo/1
-router.get('/:catalogoid', async (req, res, next) => {
-    const ID = req.params.catalogoid;
+// router.get('/:catalogoid', async (req, res, next) => {
+//     const ID = req.params.catalogoid;
 
-    if (Number.isNaN(Number(ID))) {
-        res.status(400).send({ message: 'El ID tiene que ser un número' });
-        return;
-    }
+//     if (Number.isNaN(Number(ID))) {
+//         res.status(400).send({ message: 'El ID tiene que ser un número' });
+//         return;
+//     }
 
-    const titulo = await Vista_Catalogo.findByPk(ID);
-    if (!titulo) {
-        res.status(404);
-        next({ message: 'El ID no se encontró' });
-        return;
-    }
+//     const titulo = await Vista_Catalogo.findByPk(ID);
+//     if (!titulo) {
+//         res.status(404);
+//         next({ message: 'El ID no se encontró' });
+//         return;
+//     }
 
-    res.status(200).send(titulo);
-});
+//     res.status(200).send(titulo);
+// });
 
 // Endpoint a /catalogo/nombre busqueda por titulo o porcion del nombre ruta http://localhost:8080/catalogo/nombre/titulo
 router.get('/nombre/:nombre', async (req, res, next) => {
@@ -110,8 +111,7 @@ router.get('/genero/:genero', async (req, res, next) => {
             }
         });
         if (resultados.length === 0) {
-            res.status(200);
-            next({ message: 'No se han encontrado coincidencias' });
+            res.status(403).json({ message: 'No se han encontrado coincidencias' });
             return;
         }
         res.json(resultados);
@@ -123,15 +123,14 @@ router.get('/genero/:genero', async (req, res, next) => {
 
 // Endpoint a /catalogo/categoria busqueda por Categoria ruta http://localhost:8080/catalogo/genero/nombre
 router.get('/categoria/:categoria', async (req, res, next) => {
+    const nombre = req.params.categoria;
+    // Verifica si el parámetro de búsqueda está presente
+    if (!nombre) {
+        res.status(403);
+        next({ message: `Error: Se requiere un parámetro de búsqueda.` });
+        return;
+    }
     try {
-        const nombre = req.params.categoria;
-        console.log(nombre);
-        // Verifica si el parámetro de búsqueda está presente
-        if (!nombre) {
-            res.status(404);
-            next({ message: `Error: Se requiere un parámetro de búsqueda.` });
-            return;
-        }
         // Realiza la búsqueda utilizando el operador LIKE
         const resultados = await Vista_Catalogo.findAll({
             where: {
@@ -141,8 +140,7 @@ router.get('/categoria/:categoria', async (req, res, next) => {
             }
         });
         if (resultados.length === 0) {
-            res.status(200);
-            next({ message: 'No se han encontrado coincidencias' });
+            res.status(403).json({ message: 'No se han encontrado coincidencias' });
             return;
         }
         res.json(resultados);
