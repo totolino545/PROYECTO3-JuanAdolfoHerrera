@@ -12,15 +12,21 @@ function leer() {
     });
 }
 function write(contenido, tabla, complemento, complementaria) {
-    fs.writeFile(`src/json/${tabla}.json`, JSON.stringify(contenido, null, '\t'), 'utf8', (error) => {
-        if (error) {
-            console.log('Error al agregar contenido en el archivo');
-        }
-    });
-    fs.writeFile(`src/json/${complementaria}.json`, JSON.stringify(complemento, null, '\t'), 'utf8', (error) => {
-        if (error) {
-            console.log('Error al agregar contenido en el archivo');
-        }
+    return new Promise((resolve, reject) => {
+        const datoscontenido = JSON.stringify(contenido, null, 2);
+        const datoscomplemento = JSON.stringify(complemento, null, 2);
+        fs.writeFile(`src/json/${tabla}.json`, datoscontenido, 'utf8', (error) => {
+            if (error) {
+                reject(new Error('Error al escribir contenido en el archivo'));
+            }
+            resolve(true);
+        });
+        fs.writeFile(`src/json/${complementaria}.json`, datoscomplemento, 'utf8', (error) => {
+            if (error) {
+                reject(new Error('Error al escribir contenido en el archivo'));
+            }
+            resolve(true);
+        });
     });
 }
 
@@ -39,9 +45,9 @@ async function readAll() {
         let id = 1;
         let idc = 1;
         let ida = 1;
+        let tabla1;
+        let tabla2;
         catalogo.forEach((item) => {
-            const tabla = valor; // constante nombre de json
-            const complementaria = complementos[archivo]; // constante nombre de json
             if (Object.hasOwn(item, valor)) {
                 switch (valor) {
                 case 'genero': {
@@ -54,21 +60,23 @@ async function readAll() {
                         const idcom = auxiliar.indexOf(value);
                         complemento.push({ Id: idc++, IdTitulo: item.id, Idgen: idcom + 1 });
                     });
-                    write(contenido, `${tabla}s`, complemento, `catalogo_${complementaria}`);
                     delete item.genero;
+                    tabla1 = valor;
+                    tabla2 = `catalogo_${complementos[archivo]}`;
                     break; }
                 case 'reparto': {
                     campo = item[valor].split(', ');
                     campo.forEach((value) => {
                         if (!auxiliar.includes(valor)) {
                             auxiliar.push(value);
-                            contenido.push({ Id: idc++, actor: value });
+                            complemento.push({ Id: idc++, actor: value });
                         }
                         const idcom = auxiliar.indexOf(value);
-                        complemento.push({ Id: id++, IdTitulo: item.id, IdActor: idcom + 1 });
+                        contenido.push({ Id: id++, IdTitulo: item.id, IdActor: idcom + 1 });
                     });
-                    write(complemento, `catalogo_${tabla}`, contenido, complementaria);
                     delete item.reparto;
+                    tabla1 = `catalogo_${valor}`;
+                    tabla2 = complementos[archivo];
                     break; }
                 case 'categoria': {
                     campo = item[valor].split(', ');
@@ -80,12 +88,16 @@ async function readAll() {
                         item.poster = `http://127.0.0.1:8080${item.poster}`;
                         complemento.push(item);
                     });
-                    write(contenido, tabla, complemento, complementaria);
+                    tabla1 = valor;
+                    tabla2 = complementos[archivo];
                     break; }
                 default:
                 }
             }
         });
+        console.log(complementos[archivo]);
+        console.log(`Achivos json generados  ${valor}  ${complementos[archivo]}`);
+        write(contenido, tabla1, complemento, tabla2);
     });
 }
 

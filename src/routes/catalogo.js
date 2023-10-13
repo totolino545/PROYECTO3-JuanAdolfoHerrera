@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
     const item = req.query.busqueda;
     const campo = ['generos', 'categorias', 'actricesyactores', 'catalogo'];
     if (!campo.includes(item)) {
-        res.status(400).send({ message: `Error: Se requiere un parámetro de búsqueda.` });
+        res.status(400).send({ message: `Error: Se requiere un parámetro de búsqueda correcto.` });
         return;
     }
     try {
@@ -42,24 +42,35 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// Endpoint a /catalogo lista por ID, ruta http://localhost:8080/catalogo/1
-// router.get('/:catalogoid', async (req, res, next) => {
-//     const ID = req.params.catalogoid;
+// Endpoint a /actor/ filtrar por nombre o parte del nombre ruta http://localhost:8080/actor/?actor=''?
+router.get('/actor/:actor', async (req, res, next) => {
+    const nombre = req.params.actor;
+    try {
+        if (!nombre) {
+            res.status(404);
+            next({ message: `Error: Se requiere un parámetro de búsqueda.` });
+            return;
+        }
+        // Realiza la búsqueda utilizando el operador LIKE
+        const resultados = await Vista_Catalogo.findAll({
+            where: {
+                Reparto: {
+                    [Op.like]: `%${nombre}%`
+                }
+            }
+        });
+        if (resultados.length === 0) {
+            res.status(400).json({ message: 'No se han encontrado coincidencias' });
+            return;
+        }
+        const consulta = JSON.stringify(resultados, null, '\t');
 
-//     if (Number.isNaN(Number(ID))) {
-//         res.status(400).send({ message: 'El ID tiene que ser un número' });
-//         return;
-//     }
-
-//     const titulo = await Vista_Catalogo.findByPk(ID);
-//     if (!titulo) {
-//         res.status(404);
-//         next({ message: 'El ID no se encontró' });
-//         return;
-//     }
-
-//     res.status(200).send(titulo);
-// });
+        res.send(consulta);
+    } catch (error) {
+        console.error('Error en la búsqueda:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 // Endpoint a /catalogo/nombre busqueda por titulo o porcion del nombre ruta http://localhost:8080/catalogo/nombre/titulo
 router.get('/nombre/:nombre', async (req, res, next) => {
@@ -80,11 +91,12 @@ router.get('/nombre/:nombre', async (req, res, next) => {
             }
         });
         if (resultados.length === 0) {
-            res.status(200);
-            next({ message: 'El Titulo no se encontró' });
+            res.status(400).json({ message: 'No se han encontrado coincidencias' });
             return;
         }
-        res.status(200).send(resultados);
+        const consulta = JSON.stringify(resultados, null, '\t');
+
+        res.send(consulta);
     } catch (error) {
         console.error('Error en la búsqueda:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -111,10 +123,12 @@ router.get('/genero/:genero', async (req, res, next) => {
             }
         });
         if (resultados.length === 0) {
-            res.status(403).json({ message: 'No se han encontrado coincidencias' });
+            res.status(400).json({ message: 'No se han encontrado coincidencias' });
             return;
         }
-        res.json(resultados);
+        const consulta = JSON.stringify(resultados, null, '\t');
+
+        res.send(consulta);
     } catch (error) {
         console.error('Error en la búsqueda:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -140,10 +154,12 @@ router.get('/categoria/:categoria', async (req, res, next) => {
             }
         });
         if (resultados.length === 0) {
-            res.status(403).json({ message: 'No se han encontrado coincidencias' });
+            res.status(400).json({ message: 'No se han encontrado coincidencias' });
             return;
         }
-        res.json(resultados);
+        const consulta = JSON.stringify(resultados, null, '\t');
+
+        res.send(consulta);
     } catch (error) {
         console.error('Error en la búsqueda:', error);
         res.status(500).json({ error: 'Error interno del servidor' });

@@ -6,7 +6,7 @@ const path = require('path');
 const sequelize = require('./connection/connection_db');
 const catalogo = require('./routes/catalogo');
 const writejson = require('./routes/writejson');
-const actor = require('./routes/actor');
+const titulos = require('./routes/titulos');
 
 const server = express();
 
@@ -23,8 +23,8 @@ server.use('/catalogo', catalogo);
 // Rutas a Writejson
 server.use('/writejson', writejson);
 
-// Rutas a titulo
-server.use('/actor', actor);
+// Rutas a titulos
+server.use('/titulos', titulos);
 
 // Control de rutas inexistentes
 server.use('*', (req, res) => {

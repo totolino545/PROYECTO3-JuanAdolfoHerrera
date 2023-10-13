@@ -25,7 +25,7 @@ function leer(ARCHIVO) {
 // Endpoint a /writejson lista toda la tablas ruta http://127.0.0.1:8080/writejson?load='?'
 router.post('/', async (req, res) => {
     const ARCHIVO = req.query.load;
-    const campo = ['generos', 'catalogo_reparto', 'categoria', 'catalogo_tags', 'actricesyactores', 'catalogo'];
+    const campo = ['genero', 'catalogo_reparto', 'categoria', 'catalogo_tags', 'actricesyactores', 'catalogo'];
     if (!campo.includes(ARCHIVO)) {
         res.status(400).send({ message: `Error: El paramaetro debe ser ${campo} Ingresaste ${ARCHIVO}` });
         return;
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
         let newCategoria;
 
         switch (ARCHIVO) {
-        case 'generos':
+        case 'genero':
             newCategoria = await Generos.bulkCreate(titulos);
             break;
         case 'catalogo_reparto':
