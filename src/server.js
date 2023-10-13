@@ -39,7 +39,7 @@ server.use((err, req, res) => {
 
 // Método oyente de solicitudes
 sequelize.authenticate().then(() => {
-    sequelize.sync({ force: false }).then(() => {
+    sequelize.sync({ force: true }).then(() => {
         server.listen(process.env.PORT, process.env.HOST, () => {
             console.log(`El servidor está escuchando en: http://${process.env.HOST}:${process.env.PORT}`);
         });

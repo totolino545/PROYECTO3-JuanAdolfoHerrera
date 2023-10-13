@@ -47,7 +47,7 @@ router.get('/actor/:actor', async (req, res, next) => {
     const nombre = req.params.actor;
     try {
         if (!nombre) {
-            res.status(404);
+            res.status(400);
             next({ message: `Error: Se requiere un parámetro de búsqueda.` });
             return;
         }
@@ -78,7 +78,7 @@ router.get('/nombre/:nombre', async (req, res, next) => {
         const titulo = req.params.nombre;
         // Verifica si el parámetro de búsqueda está presente
         if (!titulo) {
-            res.status(404);
+            res.status(400);
             next({ message: `Error: Se requiere un parámetro de búsqueda.` });
             return;
         }
@@ -110,7 +110,7 @@ router.get('/genero/:genero', async (req, res, next) => {
         console.log(nombre);
         // Verifica si el parámetro de búsqueda está presente
         if (!nombre) {
-            res.status(404);
+            res.status(400);
             next({ message: `Error: Se requiere un parámetro de búsqueda.` });
             return;
         }
@@ -140,7 +140,7 @@ router.get('/categoria/:categoria', async (req, res, next) => {
     const nombre = req.params.categoria;
     // Verifica si el parámetro de búsqueda está presente
     if (!nombre) {
-        res.status(403);
+        res.status(400);
         next({ message: `Error: Se requiere un parámetro de búsqueda.` });
         return;
     }

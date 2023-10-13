@@ -50,7 +50,7 @@ El presente documento, es el **Proyecto Integrador N°3** de ***Argentina Progra
         DB_PASS=tu password de mysql
     ```
  - #### SCRIPT MYSQL
-    En la carpeta src/json se encuentra el script de creación del schema trailerflix (trailerflix.sql), debe ser ejecutado en MYSQL Workbench.
+    En la carpeta src/json se encuentran dos script de creación del schema trailerflix, (trailerflix.sql) debe ser ejecutado en MYSQL Workbench y luego correr los módulos readjson.js y writejson.js.  (trailerflixwithdata.sql) contiene la creación del schema con la carga de entidades.
 
  - #### ERRORES & FORMATOS
     La comprobación de errores y formatos se ejecuta por medio del comando ***npm run eslint***. se hace por medio de Eslint. Para visualizar los errores en tiempo de escritura, se debe tener instalada la extensión de **Eslint** en Visual Studio Code.

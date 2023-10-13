@@ -95,8 +95,6 @@ async function readAll() {
                 }
             }
         });
-        console.log(complementos[archivo]);
-        console.log(`Achivos json generados  ${valor}  ${complementos[archivo]}`);
         write(contenido, tabla1, complemento, tabla2);
     });
 }

@@ -1,3 +1,4 @@
+
 CREATE DATABASE trailerflix
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
@@ -70,6 +71,8 @@ SELECT C.Id AS Id, C.titulo, C.resumen, C.temporadas, C.categoria, C.trailer, C.
 FROM Catalogo C 
 JOIN Vista_Tags T ON T.IdTitulo = C.Id
 JOIN Vista_Reparto R ON R.IdTitulo = C.Id;
+
+
 
 
 
